@@ -13,6 +13,7 @@
 ## URLs
 - **Development**: https://3000-ijo5wqe1prc89pffvcpx8-02b9cc79.sandbox.novita.ai
 - **API Endpoint**: https://3000-ijo5wqe1prc89pffvcpx8-02b9cc79.sandbox.novita.ai/api/buildings
+- **GitHub**: https://github.com/hasan0v/campus0
 
 ## Currently Completed Features
 ✅ Interactive campus map with SVG overlays for clickable areas
