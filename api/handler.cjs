@@ -57,8 +57,18 @@ module.exports = async (req, res) => {
     
     let app;
     try {
-      const module = await import('../dist/src/index.js');
-      app = module.default;
+      // Clear require cache to avoid stale modules
+      delete require.cache[require.resolve('../dist/src/index.js')];
+      const appModule = require('../dist/src/index.js');
+      
+      // Handle both default export and direct export
+      app = appModule.default || appModule;
+      
+      // If app is a function (factory), try to call it
+      if (typeof app === 'function' && !app.fetch) {
+        app = app();
+      }
+      
       console.log('✓ Hono app loaded successfully');
       console.log('App type:', typeof app);
       console.log('App.fetch type:', typeof app?.fetch);
