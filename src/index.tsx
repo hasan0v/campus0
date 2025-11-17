@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { readdirSync, readFileSync } from 'fs'
+import { readdirSync, readFileSync, existsSync } from 'fs'
 import { join, extname } from 'path'
 
 const app = new Hono()
@@ -12,32 +12,48 @@ app.use('/api/*', cors())
 app.use('/static/*', async (c, next) => {
   try {
     const filepath = c.req.path.replace('/static/', '')
-    const fullPath = join(process.cwd(), 'public', 'static', filepath)
     
-    // Security: prevent path traversal
-    if (!fullPath.startsWith(join(process.cwd(), 'public', 'static'))) {
+    // Try different possible paths for Vercel environment
+    const paths = [
+      join(process.cwd(), 'public', 'static', filepath),
+      join(process.cwd(), '../..', 'public', 'static', filepath),
+      join('/var/task', 'public', 'static', filepath),
+    ]
+    
+    let fullPath = paths[0]
+    let content = null
+    
+    for (const path of paths) {
+      if (existsSync(path)) {
+        fullPath = path
+        try {
+          content = readFileSync(path)
+          break
+        } catch (e) {
+          // continue to next path
+        }
+      }
+    }
+    
+    if (!content) {
       return c.notFound()
     }
     
-    try {
-      const content = readFileSync(fullPath)
-      const ext = extname(filepath).toLowerCase()
-      
-      let contentType = 'application/octet-stream'
-      if (ext === '.js') contentType = 'application/javascript'
-      else if (ext === '.css') contentType = 'text/css'
-      else if (['.jpg', '.jpeg'].includes(ext)) contentType = 'image/jpeg'
-      else if (ext === '.png') contentType = 'image/png'
-      else if (ext === '.gif') contentType = 'image/gif'
-      else if (ext === '.webp') contentType = 'image/webp'
-      else if (ext === '.svg') contentType = 'image/svg+xml'
-      
-      return c.body(content, 200, { 'Content-Type': contentType })
-    } catch (error) {
-      return c.notFound()
-    }
+    const ext = extname(filepath).toLowerCase()
+    
+    let contentType = 'application/octet-stream'
+    if (ext === '.js') contentType = 'application/javascript'
+    else if (ext === '.css') contentType = 'text/css'
+    else if (['.jpg', '.jpeg'].includes(ext)) contentType = 'image/jpeg'
+    else if (ext === '.png') contentType = 'image/png'
+    else if (ext === '.gif') contentType = 'image/gif'
+    else if (ext === '.webp') contentType = 'image/webp'
+    else if (ext === '.svg') contentType = 'image/svg+xml'
+    
+    return c.body(content, 200, { 'Content-Type': contentType })
   } catch (error) {
-    await next()
+    console.error('Static file error:', error)
+    return c.notFound()
   }
 })
 

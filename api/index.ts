@@ -5,10 +5,16 @@ export default async (req: VercelRequest, res: VercelResponse) => {
   try {
     const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`)
     
+    // For Vercel, pass raw body if present
+    let body = req.body
+    if (typeof body === 'object' && body !== null) {
+      body = JSON.stringify(body)
+    }
+    
     const request = new Request(url.toString(), {
-      method: req.method,
+      method: req.method || 'GET',
       headers: req.headers as Record<string, string>,
-      body: ['GET', 'HEAD'].includes(req.method || 'GET') ? undefined : JSON.stringify(req.body),
+      body: ['GET', 'HEAD'].includes(req.method || 'GET') ? undefined : body,
     })
 
     const response = await app.fetch(request)
