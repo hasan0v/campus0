@@ -4,14 +4,14 @@
   "outputDirectory": ".",
   "builds": [
     {
-      "src": "api/handler.js",
+      "src": "api/handler.cjs",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/handler.js"
+      "dest": "api/handler.cjs"
     },
     {
       "src": "/static/(.*)",
@@ -19,7 +19,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "api/handler.js"
+      "dest": "api/handler.cjs"
     }
   ]
 }
