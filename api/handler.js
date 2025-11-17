@@ -1,15 +1,31 @@
-const app = require('../dist/src/index.js').default;
 const fs = require('fs');
 const path = require('path');
 
+// Load the Hono app from the compiled dist folder
+let app;
+try {
+  app = require('../dist/src/index.js').default;
+  console.log('✓ Successfully loaded Hono app');
+} catch (error) {
+  console.error('Failed to load Hono app:', error);
+  app = null;
+}
+
 module.exports = async (req, res) => {
   try {
+    if (!app) {
+      throw new Error('Hono app not initialized');
+    }
+    
     const protocol = req.headers['x-forwarded-proto'] || 'https';
     const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost';
     const url = new URL(`${protocol}://${host}${req.url}`);
     
+    console.log(`Incoming request: ${req.method} ${req.url}`);
+    
     // Handle static file requests
     if (req.url.startsWith('/static/')) {
+      console.log('Serving static file:', req.url);
       const filepath = req.url.replace('/static/', '');
       const possiblePaths = [
         path.join(__dirname, '../public/static', filepath),
@@ -20,6 +36,7 @@ module.exports = async (req, res) => {
       for (const fullPath of possiblePaths) {
         try {
           if (fs.existsSync(fullPath)) {
+            console.log('Found static file at:', fullPath);
             const content = fs.readFileSync(fullPath);
             const ext = path.extname(filepath).toLowerCase();
             
@@ -37,11 +54,12 @@ module.exports = async (req, res) => {
             return res.send(content);
           }
         } catch (e) {
-          // continue to next path
+          console.log('Path not found:', fullPath);
         }
       }
       
       // Static file not found, return 404
+      console.log('Static file not found for:', req.url);
       res.status(404);
       return res.send('Not Found');
     }
@@ -63,8 +81,10 @@ module.exports = async (req, res) => {
       body,
     });
 
+    console.log('Passing request to Hono app');
     const response = await app.fetch(request);
     
+    console.log('Got response from Hono app, status:', response.status);
     res.status(response.status);
     
     response.headers.forEach((value, key) => {
@@ -80,6 +100,6 @@ module.exports = async (req, res) => {
   } catch (error) {
     console.error('Handler error:', error);
     res.status(500);
-    res.send('Internal Server Error: ' + error.message);
+    res.send('Internal Server Error: ' + (error.message || 'Unknown error'));
   }
 };
