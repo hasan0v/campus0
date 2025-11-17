@@ -63,63 +63,63 @@ const buildings = [
     id: 'building-1',
     name: 'Main Building',
     description: 'The main administrative building of the campus',
-    image: '/static/images/building-1.jpg',
+    image: '/static/images/eco/1.jpg',
     coordinates: { x: 165, y: 135, width: 100, height: 120 }
   },
   {
     id: 'building-2',
     name: 'Academic Building A',
     description: 'Primary academic building with lecture halls and classrooms',
-    image: '/static/images/building-2.jpg',
+    image: '/static/images/kitab_evi/1.jpg',
     coordinates: { x: 385, y: 95, width: 85, height: 110 }
   },
   {
     id: 'building-3',
     name: 'Academic Building B',
     description: 'Secondary academic building with laboratories and study areas',
-    image: '/static/images/building-3.jpg',
+    image: '/static/images/tetym/1.jpeg',
     coordinates: { x: 575, y: 95, width: 110, height: 100 }
   },
   {
     id: 'building-4',
     name: 'Library',
     description: 'Central library with extensive collection and study spaces',
-    image: '/static/images/building-4.jpg',
+    image: '/static/images/eco/2.jpg',
     coordinates: { x: 290, y: 100, width: 70, height: 95 }
   },
   {
     id: 'building-5',
     name: 'Sports Complex',
     description: 'Indoor sports facilities and fitness center',
-    image: '/static/images/building-5.jpg',
+    image: '/static/images/stadion/1.jpg',
     coordinates: { x: 175, y: 265, width: 135, height: 90 }
   },
   {
     id: 'stadium',
     name: 'Football Stadium',
     description: 'Main football stadium for sports events and competitions',
-    image: '/static/images/stadium.jpg',
+    image: '/static/images/stadion/2.jpg',
     coordinates: { x: 420, y: 280, width: 135, height: 90 }
   },
   {
     id: 'building-6',
     name: 'Student Center',
     description: 'Student activities and cafeteria',
-    image: '/static/images/building-6.jpg',
+    image: '/static/images/kitab_evi/2.jpg',
     coordinates: { x: 805, y: 185, width: 90, height: 95 }
   },
   {
     id: 'building-7',
     name: 'Research Building',
     description: 'Research labs and innovation center',
-    image: '/static/images/building-7.jpg',
+    image: '/static/images/eco/3.jpg',
     coordinates: { x: 705, y: 270, width: 85, height: 65 }
   },
   {
     id: 'parking',
     name: 'Parking Area',
     description: 'Main parking facility for students and staff',
-    image: '/static/images/parking.jpg',
+    image: '/static/images/tetym/2.jpeg',
     coordinates: { x: 70, y: 310, width: 60, height: 55 }
   }
 ]
