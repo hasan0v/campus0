@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.api.json",
     "start": "node dist/server.js",
     "test": "curl http://localhost:3000"
   },
