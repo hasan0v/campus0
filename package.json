@@ -8,6 +8,7 @@
     "test": "curl http://localhost:3000"
   },
   "dependencies": {
+    "@vercel/node": "^3.2.29",
     "hono": "^4.10.3"
   },
   "devDependencies": {
