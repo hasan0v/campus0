@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
     
     let app;
     try {
-      const module = require('../dist/src/index.js');
+      const module = await import('../dist/src/index.js');
       app = module.default;
       console.log('✓ Hono app loaded successfully');
       console.log('App type:', typeof app);
