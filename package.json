@@ -1,6 +1,6 @@
 {
   "name": "campus-map",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc && tsc -p tsconfig.api.json",
