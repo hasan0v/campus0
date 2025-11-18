@@ -10,12 +10,12 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
+      "src": "/static/(.*)",
       "dest": "api/handler.cjs"
     },
     {
-      "src": "/static/(.*)",
-      "dest": "/public/static/$1"
+      "src": "/api/(.*)",
+      "dest": "api/handler.cjs"
     },
     {
       "src": "/(.*)",
