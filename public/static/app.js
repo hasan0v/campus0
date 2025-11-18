@@ -482,6 +482,16 @@ document.addEventListener('click', (e) => {
 function updateInfoPanel(building) {
     const infoContent = document.getElementById('info-content');
     
+    // Ensure galleries is an array
+    if (!building.galleries || !Array.isArray(building.galleries)) {
+        building.galleries = building.image ? [{ url: building.image, caption: '' }] : [];
+    }
+    
+    console.log(`Displaying building: ${building.id} (${building.name})`, {
+        totalGalleries: building.galleries.length,
+        galleries: building.galleries
+    });
+    
     // Get icon based on building type
     const icon = getIconForBuilding(building.name);
     
@@ -523,11 +533,7 @@ function updateInfoPanel(building) {
         modalTitle.innerHTML = `<i class="${icon}"></i><span>${building.name}</span>`;
     }
     
-    // Ensure galleries array exists
-    if (!building.galleries) {
-        building.galleries = building.image ? [{ url: building.image, caption: '' }] : [];
-    }
-    
+    // Use the galleries we already ensured exist
     const galleries = building.galleries && building.galleries.length > 0 ? building.galleries : [{ url: '', caption: '' }];
     const galleriesHTML = galleries.map((img, idx) => `
         <div class="carousel-item ${idx === 0 ? 'active' : ''}" data-index="${idx}" style="display: ${idx === 0 ? 'block' : 'none'};">
@@ -1861,10 +1867,18 @@ function importData(event) {
                 }
                 
                 // Ensure galleries exist for each building
-                const sanitizedBuildings = importedBuildings.map(b => ({
-                    ...b,
-                    galleries: b.galleries && Array.isArray(b.galleries) ? b.galleries : (b.image ? [{ url: b.image, caption: '' }] : [])
-                }));
+                const sanitizedBuildings = importedBuildings.map(b => {
+                    const galleries = b.galleries && Array.isArray(b.galleries) ? b.galleries : (b.image ? [{ url: b.image, caption: '' }] : []);
+                    console.log(`Building ${b.id} (${b.name}): ${galleries.length} galleries`, galleries);
+                    return {
+                        ...b,
+                        galleries: galleries
+                    };
+                });
+                
+                // Log summary
+                const totalImages = sanitizedBuildings.reduce((sum, b) => sum + (b.galleries ? b.galleries.length : 0), 0);
+                console.log(`Import summary: ${sanitizedBuildings.length} buildings with total ${totalImages} images`);
                 
                 // Update buildings
                 buildings.length = 0;
