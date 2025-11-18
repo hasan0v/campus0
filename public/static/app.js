@@ -1805,7 +1805,18 @@ document.head.appendChild(style);
 
 // Export data to JSON file
 function exportData() {
-    const dataStr = JSON.stringify(buildings, null, 2);
+    // Ensure all buildings have complete data including galleries
+    const dataToExport = buildings.map(b => ({
+        id: b.id,
+        name: b.name,
+        description: b.description || '',
+        image: b.image || '',
+        coordinates: b.coordinates || {},
+        galleries: b.galleries || (b.image ? [{ url: b.image, caption: '' }] : []),
+        shapes: b.shapes || [] // Include any drawn shapes
+    }));
+    
+    const dataStr = JSON.stringify(dataToExport, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
@@ -1819,63 +1830,75 @@ function exportData() {
     // Mark backup as done
     markBackupDone();
     
-    showNotification(`Backup created! ${buildings.length} buildings saved to file. Keep it safe!`, 'success', 4000);
+    showNotification(`Backup created! ${buildings.length} buildings with ${dataToExport.reduce((sum, b) => sum + (b.galleries ? b.galleries.length : 0), 0)} images saved to file. Keep it safe!`, 'success', 4000);
 }
 
 // Import data from JSON file
-function importData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'application/json';
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
     
-    input.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        try {
-            const text = await file.text();
-            const importedBuildings = JSON.parse(text);
-            
-            if (!Array.isArray(importedBuildings)) {
-                showNotification('Invalid file format. Expected an array of buildings.', 'error', 4000);
-                return;
+    try {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const text = e.target.result;
+                const importedBuildings = JSON.parse(text);
+                
+                if (!Array.isArray(importedBuildings)) {
+                    showNotification('Invalid file format. Expected an array of buildings.', 'error', 4000);
+                    return;
+                }
+                
+                // Validate the structure - be more lenient for optional fields
+                const isValid = importedBuildings.every(b => 
+                    b.id && b.name && b.coordinates
+                );
+                
+                if (!isValid) {
+                    showNotification('Invalid building data structure. Each building needs id, name, and coordinates.', 'error', 4000);
+                    return;
+                }
+                
+                // Ensure galleries exist for each building
+                const sanitizedBuildings = importedBuildings.map(b => ({
+                    ...b,
+                    galleries: b.galleries && Array.isArray(b.galleries) ? b.galleries : (b.image ? [{ url: b.image, caption: '' }] : [])
+                }));
+                
+                // Update buildings
+                buildings.length = 0;
+                buildings.push(...sanitizedBuildings);
+                
+                // Save to localStorage
+                localStorage.setItem('campusBuildings', JSON.stringify(sanitizedBuildings));
+                
+                // Update server
+                try {
+                    await axios.post('/api/buildings/save', { buildings: sanitizedBuildings });
+                } catch (serverError) {
+                    console.warn('Server save error:', serverError);
+                    // Continue even if server fails
+                }
+                
+                // Refresh display
+                createBuildingOverlays();
+                createLegend();
+                
+                // Mark backup as done since we just restored
+                markBackupDone();
+                
+                showNotification(`Successfully restored ${sanitizedBuildings.length} buildings from backup! All images and data restored.`, 'success', 3000);
+            } catch (parseError) {
+                console.error('Parse error:', parseError);
+                showNotification('Error parsing JSON file: ' + parseError.message, 'error', 5000);
             }
-            
-            // Validate the structure
-            const isValid = importedBuildings.every(b => 
-                b.id && b.name && b.coordinates
-            );
-            
-            if (!isValid) {
-                showNotification('Invalid building data structure.', 'error', 4000);
-                return;
-            }
-            
-            // Update buildings
-            buildings.length = 0;
-            buildings.push(...importedBuildings);
-            
-            // Save to localStorage
-            localStorage.setItem('campusBuildings', JSON.stringify(importedBuildings));
-            
-            // Update server
-            await axios.post('/api/buildings/save', { buildings: importedBuildings });
-            
-            // Refresh display
-            createBuildingOverlays();
-            createLegend();
-            
-            // Mark backup as done since we just restored
-            markBackupDone();
-            
-            showNotification(`Successfully restored ${importedBuildings.length} buildings from backup!`, 'success', 3000);
-        } catch (error) {
-            console.error('Import error:', error);
-            showNotification('Error importing file: ' + error.message, 'error', 5000);
-        }
-    };
-    
-    input.click();
+        };
+        reader.readAsText(file);
+    } catch (error) {
+        console.error('Import error:', error);
+        showNotification('Error importing file: ' + error.message, 'error', 5000);
+    }
 }
 
 // Clear all saved data
