@@ -481,7 +481,7 @@ app.get('/', (c) => {
     <body class="bg-gradient-to-br from-[#f5f7fa] via-[#e8ecf1] to-[#f5f7fa] min-h-screen">
         <div class="min-h-screen p-6 backdrop-blur-sm">
             <!-- Header -->
-            <div class="max-w-7xl mx-auto mb-8 animate-fade-in hidden">
+            <div class="max-w-7xl mx-auto mb-8 animate-fade-in ">
                 <div class="bg-gradient-to-r from-[#1a3a5c] via-[#2d5a8c] to-[#1a3a5c] rounded-2xl shadow-xl p-6 border border-white/30">
                     <div class="flex justify-between items-start">
                         <div>
