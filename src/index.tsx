@@ -145,6 +145,9 @@ app.get('/api/images', (c) => {
 
 // Default route - Main page
 app.get('/', (c) => {
+  c.header('Cache-Control', 'no-cache, no-store, must-revalidate')
+  c.header('Pragma', 'no-cache')
+  c.header('Expires', '0')
   return c.html(`
     <!DOCTYPE html>
     <html lang="en">
@@ -154,6 +157,13 @@ app.get('/', (c) => {
         <title>Interactive Campus Map</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
+        <script>
+          tailwind.config = {
+            theme: {
+              extend: {}
+            }
+          }
+        </script>
         <style>
           :root {
             --primary-blue: #1a3a5c;
@@ -413,12 +423,67 @@ app.get('/', (c) => {
           #campus-map {
             transition: none;
           }
+          
+          .main-card {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(18px);
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+          }
+          
+          .buildings-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            padding: 1.5rem 2rem 2rem 2rem;
+            background: linear-gradient(to right, #f5f7fa, #ffffff, #f5f7fa);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+          }
+          
+          .building-btn {
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid var(--secondary-blue);
+            border-radius: 0.5rem;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+          }
+          
+          .building-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 58, 92, 0.2);
+          }
+          
+          .map-container {
+            position: relative;
+            width: 100%;
+            padding: 2rem 2rem 0 2rem;
+          }
+
+          #legend {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            width: 100%;
+          }
+
+          #legend .legend-item {
+            width: 100%;
+          }
         </style>
     </head>
     <body class="bg-gradient-to-br from-[#f5f7fa] via-[#e8ecf1] to-[#f5f7fa] min-h-screen">
         <div class="min-h-screen p-6 backdrop-blur-sm">
             <!-- Header -->
-            <div class="max-w-7xl mx-auto mb-8 animate-fade-in">
+            <div class="max-w-7xl mx-auto mb-8 animate-fade-in hidden">
                 <div class="bg-gradient-to-r from-[#1a3a5c] via-[#2d5a8c] to-[#1a3a5c] rounded-2xl shadow-xl p-6 border border-white/30">
                     <div class="flex justify-between items-start">
                         <div>
@@ -480,17 +545,17 @@ app.get('/', (c) => {
 
             <!-- Main Content -->
             <div class="max-w-full mx-auto animate-fade-in-up">
-                <div class="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/50 overflow-hidden">
-                    <div class="p-8 pb-6">
+                <div class="main-card">
+                    <div class="p-8 pb-6 hidden">
                         <h2 class="text-3xl font-bold mb-6 bg-gradient-to-r from-[#1a3a5c] to-[#2d5a8c] bg-clip-text text-transparent flex items-center gap-2">
                             <i class="fas fa-map text-[#1a3a5c]"></i>
                             Kampus Xəritəsi
                         </h2>
                     </div>
                     
-                    <div class="flex relative">
+                    <div class="flex flex-col relative">
                         <!-- Campus Map -->
-                        <div class="flex-1 px-8 pb-8">
+                        <div class="map-container">
                             <div id="campus-container" class="relative overflow-hidden rounded-xl shadow-inner border-4 border-gray-100">
                                 <img id="campus-map" src="/static/images/campus-map.png" alt="Campus Map" />
                                 <svg id="svg-overlay" viewBox="0 0 1000 450" preserveAspectRatio="xMidYMid meet">
@@ -499,16 +564,16 @@ app.get('/', (c) => {
                             </div>
                         </div>
                         
-                        <!-- Building List Sidebar -->
-                        <div id="sidebar-container" class="w-80 border-l border-[#d4af37]/30 bg-gradient-to-b from-[#f5f7fa] to-[#e8ecf1] overflow-hidden flex flex-col">
-                            <div class="p-6 pb-4">
-                                <h3 class="text-lg font-bold bg-gradient-to-r from-[#1a3a5c] to-[#2d5a8c] bg-clip-text text-transparent flex items-center gap-2">
-                                    <i class="fas fa-building-columns text-[#1a3a5c]"></i>
+                        <!-- Building List Sidebar - Now Below Map -->
+                        <div id="sidebar-container" class="w-full">
+                            <div class="buildings-grid">
+                                <h3 class="text-lg font-bold flex items-center gap-2 w-full" style="color: var(--primary-blue);">
+                                    <i class="fas fa-building-columns"></i>
                                     Binalar
                                 </h3>
-                            </div>
-                            <div id="legend" class="space-y-2 overflow-y-auto pr-8 pl-7 flex-1 pb-6 pt-4">
-                                <!-- Building buttons will be added dynamically -->
+                                <div id="legend">
+                                    <!-- Building buttons will be added dynamically -->
+                                </div>
                             </div>
                         </div>
                     </div>

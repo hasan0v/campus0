@@ -901,18 +901,8 @@ function createLegend() {
 
 // Match sidebar height to map height
 function matchSidebarHeight() {
-    const mapContainer = document.getElementById('campus-container');
-    const sidebarContainer = document.getElementById('sidebar-container');
-    const legend = document.getElementById('legend');
-    
-    if (mapContainer && sidebarContainer && legend) {
-        const mapHeight = mapContainer.offsetHeight;
-        sidebarContainer.style.height = mapHeight + 'px';
-        
-        // Calculate legend height (subtract header padding and title)
-        const legendHeight = mapHeight - 80; // 80px for header area
-        legend.style.maxHeight = legendHeight + 'px';
-    }
+    // No longer needed - sidebar is below map and auto-sizes to content
+    // Keeping function for compatibility but removing height manipulation
 }
 
 // Toggle edit mode
