@@ -4,8 +4,9 @@
     "module": "commonjs",
     "target": "ES2020",
     "outDir": "./dist",
+    "rootDir": "./",
     "declaration": true
   },
   "include": ["api/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src"]
 }
