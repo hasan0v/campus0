@@ -63,6 +63,24 @@ brew install node git
    ```
 5. **Open your browser** and go to `http://localhost:3000`
 
+### Linux/Ubuntu (If Permission Error Occurs)
+
+If you get **"Permission denied"** error:
+
+```bash
+# Fix 1: Make script executable
+chmod +x run.sh
+./run.sh
+
+# Fix 2: Run with bash directly (no chmod needed)
+bash run.sh
+
+# Fix 3: Manual setup
+npm install
+npm run build
+npm run dev
+```
+
 ## Manual Setup (Linux/Ubuntu)
 
 If you prefer to run commands manually:
