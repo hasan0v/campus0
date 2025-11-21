@@ -2,24 +2,25 @@
   "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "builds": [
-    {
-      "src": "api/handler.cjs",
-      "use": "@vercel/node"
+  "functions": {
+    "api/index.ts": {
+      "runtime": "nodejs22.x",
+      "maxDuration": 30,
+      "memory": 3008
     }
-  ],
+  },
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "api/handler.cjs"
+      "dest": "/api/index.ts"
     },
     {
       "src": "/api/(.*)",
-      "dest": "api/handler.cjs"
+      "dest": "/api/index.ts"
     },
     {
       "src": "/(.*)",
-      "dest": "api/handler.cjs"
+      "dest": "/api/index.ts"
     }
   ]
 }
