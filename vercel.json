@@ -6,7 +6,7 @@
     "api/index.ts": {
       "runtime": "nodejs22.x",
       "maxDuration": 30,
-      "memory": 3008
+      "memory": 512
     }
   },
   "routes": [
