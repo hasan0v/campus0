@@ -3,7 +3,7 @@
   "type": "commonjs",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc && tsc -p tsconfig.api.json",
+    "build": "tsc",
     "start": "node dist/server.js",
     "test": "curl http://localhost:3000"
   },

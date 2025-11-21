@@ -57,32 +57,34 @@ module.exports = async (req, res) => {
     
     let app;
     try {
-      // Clear require cache to avoid stale modules
-      let appPath;
-      
-      // Try multiple possible paths
+      // Try to load the compiled app from multiple paths
+      let appModule;
       const possiblePaths = [
+        '../dist/api/index.js',
         '../dist/src/index.js',
         '../dist/index.js',
       ];
       
-      for (const path of possiblePaths) {
+      let loadedPath = null;
+      for (const tryPath of possiblePaths) {
         try {
-          require.resolve(path);
-          appPath = path;
-          console.log('Found app at:', path);
+          delete require.cache[require.resolve(tryPath)];
+          appModule = require(tryPath);
+          loadedPath = tryPath;
+          console.log('✓ Loaded app from:', tryPath);
           break;
         } catch (e) {
-          // Try next path
+          console.log('App not found at:', tryPath);
+          continue;
         }
       }
       
-      if (!appPath) {
-        throw new Error('Cannot find compiled app at any known path: ' + possiblePaths.join(', '));
+      if (!appModule) {
+        throw new Error('Failed to load app from any path: ' + possiblePaths.join(', '));
       }
       
-      delete require.cache[require.resolve(appPath)];
-      const appModule = require(appPath);
+      // Handle both default export and direct export
+      app = appModule.default || appModule;
       
       // Handle both default export and direct export
       app = appModule.default || appModule;

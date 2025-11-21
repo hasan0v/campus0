@@ -29,8 +29,12 @@ const server = createServer(async (req, res) => {
     // Get response from Hono
     const response = await app.fetch(request)
     
-    // Send response
-    res.writeHead(response.status, Object.fromEntries(response.headers.entries()))
+    // Send response - convert headers to plain object
+    const headersObj: Record<string, string> = {}
+    response.headers.forEach((value, key) => {
+      headersObj[key] = value
+    })
+    res.writeHead(response.status, headersObj)
     
     if (response.body) {
       const buffer = await response.arrayBuffer()
