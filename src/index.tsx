@@ -483,7 +483,7 @@ app.get('/', (c) => {
     <body class="bg-gradient-to-br from-[#f5f7fa] via-[#e8ecf1] to-[#f5f7fa] min-h-screen">
         <div class="min-h-screen p-6 backdrop-blur-sm">
             <!-- Header -->
-            <div class="max-w-7xl mx-auto mb-8 animate-fade-in hidden">
+            <div class="max-w-7xl mx-auto mb-8 animate-fade-in">
                 <div class="bg-gradient-to-r from-[#1a3a5c] via-[#2d5a8c] to-[#1a3a5c] rounded-2xl shadow-xl p-6 border border-white/30">
                     <div class="flex justify-between items-start">
                         <div>
@@ -522,10 +522,11 @@ app.get('/', (c) => {
             <!-- Shape Tools Panel (Hidden by default) -->
             <div id="shape-tools" class="hidden max-w-7xl mx-auto mb-6 animate-slide-down">
                 <div class="bg-gradient-to-r from-[#1a3a5c] to-[#2d5a8c] rounded-2xl shadow-2xl p-5 border border-[#d4af37]/30">
-                    <div class="flex items-center gap-4 flex-wrap">
+                    <!-- Main Shape Tools Row -->
+                    <div class="flex items-center gap-4 flex-wrap mb-4">
                         <span class="font-bold text-white text-lg flex items-center gap-2">
                             <i class="fas fa-pencil-ruler text-[#d4af37]"></i>
-                            Draw Shape:
+                            Şəkil Çək:
                         </span>
                         <button onclick="setShapeType('rect')" data-shape="rect" class="shape-btn px-5 py-2.5 bg-gradient-to-br from-[#2d5a8c] to-[#1a3a5c] text-white rounded-xl active:from-[#1a3a5c] active:to-[#0f1e35] transition-colors duration-200 shadow-lg ring-2 ring-[#d4af37]">
                             <i class="fas fa-square mr-2"></i>Rectangle
@@ -536,9 +537,78 @@ app.get('/', (c) => {
                         <button onclick="setShapeType('polygon')" data-shape="polygon" class="shape-btn px-5 py-2.5 bg-gradient-to-br from-[#4a5568] to-[#2d3748] text-white rounded-xl active:from-[#2d3748] active:to-[#1a202c] transition-colors duration-200 shadow-lg">
                             <i class="fas fa-draw-polygon mr-2"></i>Polygon
                         </button>
-                        <button onclick="deleteShape()" class="px-5 py-2.5 bg-gradient-to-br from-[#d4af37] to-[#c49f2f] text-[#1a3a5c] rounded-xl active:from-[#c49f2f] active:to-[#a88025] transition-colors duration-200 shadow-lg ml-auto font-semibold">
-                            <i class="fas fa-trash mr-2"></i>Delete Selected
+                        <div class="h-8 w-px bg-white/30 mx-2"></div>
+                        <button onclick="deleteShape()" class="px-5 py-2.5 bg-gradient-to-br from-[#dc2626] to-[#b91c1c] text-white rounded-xl active:from-[#b91c1c] active:to-[#991b1b] transition-colors duration-200 shadow-lg font-semibold">
+                            <i class="fas fa-trash mr-2"></i>Seçilmişi Sil
                         </button>
+                    </div>
+                    
+                    <!-- Advanced Tools Row -->
+                    <div class="flex items-center gap-3 flex-wrap pt-4 border-t border-white/20">
+                        <span class="font-semibold text-white/80 text-sm flex items-center gap-2">
+                            <i class="fas fa-tools text-[#d4af37]"></i>
+                            Əlavə Alətlər:
+                        </span>
+                        
+                        <!-- Pan Mode -->
+                        <button onclick="togglePanMode()" id="pan-mode-btn" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-sm font-medium" title="Space düyməsini basıb saxlayın">
+                            <i class="fas fa-hand-paper mr-2"></i>Pan
+                        </button>
+                        
+                        <!-- Reset View -->
+                        <button onclick="resetPanZoom()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-sm font-medium" title="Görünüşü sıfırla (0 düyməsi)">
+                            <i class="fas fa-compress-arrows-alt mr-2"></i>Sıfırla
+                        </button>
+                        
+                        <div class="h-6 w-px bg-white/20 mx-1"></div>
+                        
+                        <!-- Grid Snap -->
+                        <button onclick="toggleSnapToGrid()" id="snap-grid-btn" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-sm font-medium" title="G düyməsi ilə aktiv/deaktiv">
+                            <i class="fas fa-th mr-2"></i>Grid Snap
+                        </button>
+                        
+                        <!-- Coordinate Display -->
+                        <button onclick="toggleCoordinateDisplay()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-sm font-medium">
+                            <i class="fas fa-crosshairs mr-2"></i>Koordinatlar
+                        </button>
+                        
+                        <div class="h-6 w-px bg-white/20 mx-1"></div>
+                        
+                        <!-- Polygon Tools (shown when polygon mode active) -->
+                        <button onclick="undoPolygonAction()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-sm font-medium" title="Ctrl+Z">
+                            <i class="fas fa-undo mr-2"></i>Geri
+                        </button>
+                        <button onclick="redoPolygonAction()" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 text-sm font-medium" title="Ctrl+Y">
+                            <i class="fas fa-redo mr-2"></i>İrəli
+                        </button>
+                        
+                        <div class="h-6 w-px bg-white/20 mx-1"></div>
+                        
+                        <!-- Finish Polygon -->
+                        <button onclick="finishPolygonAdvanced()" class="px-4 py-2 bg-gradient-to-r from-[#22c55e] to-[#16a34a] text-white rounded-lg transition-all duration-200 text-sm font-semibold shadow-lg" title="Enter düyməsi">
+                            <i class="fas fa-check mr-2"></i>Polygonu Bitir
+                        </button>
+                        
+                        <!-- Cancel Polygon -->
+                        <button onclick="cancelPolygonDrawing()" class="px-4 py-2 bg-gradient-to-r from-[#ef4444] to-[#dc2626] text-white rounded-lg transition-all duration-200 text-sm font-medium" title="Esc düyməsi">
+                            <i class="fas fa-times mr-2"></i>Ləğv et
+                        </button>
+                    </div>
+                    
+                    <!-- Help Text -->
+                    <div class="mt-4 pt-3 border-t border-white/10">
+                        <p class="text-white/60 text-xs">
+                            <i class="fas fa-lightbulb text-[#d4af37] mr-2"></i>
+                            <strong>Qısayollar:</strong> 
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">Space</span> Pan |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">G</span> Grid |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">Ctrl+Z</span> Geri |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">Enter</span> Bitir |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">Esc</span> Ləğv |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">Delete</span> Sil |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">Mouse Wheel</span> Zoom |
+                            <span class="bg-white/10 px-2 py-0.5 rounded mx-1">0</span> Reset
+                        </p>
                     </div>
                 </div>
             </div>
@@ -583,7 +653,7 @@ app.get('/', (c) => {
                 <div id="modal-backdrop" class="modal-backdrop" onclick="closeInfoPanel()"></div>
                 
                 <!-- Info Modal -->
-                <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300" style="visibility: hidden;">
+                <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300" style="visibility: ;">
                     <div class="modal-content bg-white rounded-3xl shadow-2xl border border-gray-200 w-full max-w-4xl max-h-[95vh] overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
                         <!-- Modal Header -->
                         <div class="bg-gradient-to-r from-[#1a3a5c] via-[#2d5a8c] to-[#1a3a5c] p-6 relative">
