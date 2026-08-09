@@ -1,9 +1,20 @@
 # Interactive Campus Map
 
-## Project Overview
+A responsive campus navigation experience with clickable buildings and a supporting REST API.
+
+| Field | Value |
+| --- | --- |
+| Focus | Interactive mapping |
+| Status | Active portfolio project |
+
+## Overview
+
+A responsive campus navigation experience with clickable buildings and a supporting REST API.
+
+## Project details
 - **Name**: Interactive Campus Map
 - **Goal**: Create an interactive web application for campus navigation with clickable buildings that display detailed information
-- **Features**: 
+- **Features**:
   - Interactive campus map with SVG overlay
   - Clickable buildings with hover effects
   - Real-time information display for selected buildings
@@ -13,18 +24,18 @@
 ## URLs
 - **Development**: https://3000-ijo5wqe1prc89pffvcpx8-02b9cc79.sandbox.novita.ai
 - **API Endpoint**: https://3000-ijo5wqe1prc89pffvcpx8-02b9cc79.sandbox.novita.ai/api/buildings
-- **GitHub**: https://github.com/hasan0v/campus0
+- **GitHub**: https://github.com/hasan0v/interactive-campus-map
 
 ## Currently Completed Features
-✅ Interactive campus map with SVG overlays for clickable areas
-✅ Backend API with building information (9 buildings/facilities)
-✅ Frontend JavaScript for dynamic interaction
-✅ Building selection with visual feedback
-✅ Info panel with building details, description, and location
-✅ Legend with all buildings listed
-✅ Responsive design with Tailwind CSS
-✅ Icon-based building identification
-✅ Smooth animations and transitions
+ Interactive campus map with SVG overlays for clickable areas
+ Backend API with building information (9 buildings/facilities)
+ Frontend JavaScript for dynamic interaction
+ Building selection with visual feedback
+ Info panel with building details, description, and location
+ Legend with all buildings listed
+ Responsive design with Tailwind CSS
+ Icon-based building identification
+ Smooth animations and transitions
 
 ## Functional Entry URIs
 - **GET /**: Main application page with interactive campus map
@@ -47,7 +58,7 @@
 ## Data Architecture
 - **Data Models**: Building objects with properties (id, name, description, coordinates, image)
 - **Storage Services**: In-memory data storage (no database required for this static data)
-- **Data Flow**: 
+- **Data Flow**:
   1. Backend API serves building data
   2. Frontend fetches data via axios
   3. SVG overlays created dynamically based on coordinates
@@ -113,10 +124,21 @@ pm2 delete campus-map
 
 ## Deployment
 - **Platform**: Cloudflare Pages (ready for deployment)
-- **Status**: ✅ Active (Development)
+- **Status**:  Active (Development)
 - **Last Updated**: October 29, 2025
 
 ## Author
 Developed by Ali Hasanov
 - Website: https://ali-hasanov.com
 - Position: Department Leader, Python Developer, Data Scientist, and ML Engineer at Baku State University
+
+## Repository
+
+```bash
+git clone https://github.com/hasan0v/interactive-campus-map.git
+cd interactive-campus-map
+```
+
+## Status
+
+Active portfolio project.
